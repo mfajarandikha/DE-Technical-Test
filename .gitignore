@@ -2,4 +2,6 @@ logs/
 plugins/
 config/
 .env
-dags/__pycache__/
+.*
+__pycache__/
+*.pyc

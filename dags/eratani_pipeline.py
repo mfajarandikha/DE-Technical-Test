@@ -1,33 +1,47 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from datetime import datetime
-import subprocess
-
-def run_load_script():
-    script_path = "/opt/airflow/scripts/load_to_postgres.py"
-    print(f"Running load script...")
-    result = subprocess.run(["python3", script_path], capture_output=True, text=True)
-    if result.returncode != 0:
-        print(result.stderr)
-        raise Exception("Load script failed")
+from docker.types import Mount
 
 default_args = {
     "owner": "fajar",
     "depends_on_past": False,
-    "retries": 1,
 }
 
 with DAG(
-    dag_id="eratani_pipeline",
+    "dbt_seed_dag",
     default_args=default_args,
-    schedule="0 6 * * *", 
-    start_date=datetime(2023, 1, 1),
+    schedule=None,
+    start_date=datetime(2025, 8, 15),
     catchup=False,
 ) as dag:
-
-    run_script = PythonOperator(
-        task_id="run_load_script",
-        python_callable=run_load_script
+    run_dbt_seed = DockerOperator(
+        task_id="run_dbt_seed",
+        image="ghcr.io/dbt-labs/dbt-postgres:1.8.1",
+        api_version="auto",
+        auto_remove="success",
+        command="seed",
+        docker_url="unix://var/run/docker.sock",
+        network_mode="de-technical-test_airflow_network",
+        working_dir="/usr/app",
+        mounts=[
+            Mount(
+                source="/workspaces/DE-Technical-Test/dbt/my_project_test",
+                target="/usr/app",
+                type="bind",
+            ),
+            Mount(
+                source="/workspaces/DE-Technical-Test/dbt",
+                target="/root/.dbt",
+                type="bind",
+            ),
+            Mount(
+                source="/workspaces/DE-Technical-Test/data",
+                target="/usr/app/seeds",
+                type="bind",
+            ),
+        ],
+        environment={"DBT_PROFILE_DIR": "/root/.dbt"},
     )
 
-    run_script
+    run_dbt_seed

@@ -15,16 +15,18 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://airflow-apiserver:8080/execution/'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker==3.10.1
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
-    - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
     - ${AIRFLOW_PROJ_DIR:-.}/scripts:/opt/airflow/scripts
-    
+    - /var/run/docker.sock:/var/run/docker.sock
+
+  group_add:
+    - '103'
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -205,6 +207,23 @@ services:
       POSTGRES_DB: destination_db
       POSTGRES_USER: destination_user
       POSTGRES_PASSWORD: secret
+
+# dbt:
+# image: ghcr.io/dbt-labs/dbt-postgres:1.8.1
+# container_name: dbt
+# depends_on:
+# - destination_postgres
+# working_dir: /usr/app
+# environment:
+# DBT_PROFILE_DIR: "/root/.dbt"
+# volumes:
+# - ./dbt/my_project_test:/usr/app
+# - ./dbt:/root/.dbt
+# - ./data:/usr/app/seeds
+
+# networks:
+# - airflow_network
+# command: seed
 
 volumes:
   postgres-db-volume:
