@@ -22,7 +22,6 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
-    - ${AIRFLOW_PROJ_DIR:-.}/scripts:/opt/airflow/scripts
     - /var/run/docker.sock:/var/run/docker.sock
 
   group_add:
@@ -207,23 +206,6 @@ services:
       POSTGRES_DB: destination_db
       POSTGRES_USER: destination_user
       POSTGRES_PASSWORD: secret
-
-# dbt:
-# image: ghcr.io/dbt-labs/dbt-postgres:1.8.1
-# container_name: dbt
-# depends_on:
-# - destination_postgres
-# working_dir: /usr/app
-# environment:
-# DBT_PROFILE_DIR: "/root/.dbt"
-# volumes:
-# - ./dbt/my_project_test:/usr/app
-# - ./dbt:/root/.dbt
-# - ./data:/usr/app/seeds
-
-# networks:
-# - airflow_network
-# command: seed
 
 volumes:
   postgres-db-volume:

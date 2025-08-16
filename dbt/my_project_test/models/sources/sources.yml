@@ -6,28 +6,35 @@ sources:
     schema: public
     tables:
       - name: stg_farm_productions
-        description: "Contains farm details including crop, area, input usage, and yield."
         columns:
           - name: Farm_ID
-            description: "Unique identifier for each farm."
             tests:
               - not_null
               - unique
           - name: Crop_Type
-            description: "Type of crop planted."
+            tests:
+              - not_null
           - name: Farm_Area(acres)
-            description: "Total farm area in acres."
+            tests:
+              - not_null
           - name: Irrigation_Type
-            description: "Type of irrigation system used."
+            tests:
+              - not_null
           - name: Fertilizer_Used(tons)
-            description: "Total fertilizer used in tons."
+            tests:
+              - not_null
           - name: Pesticide_Used(kg)
-            description: "Total pesticide used in kilograms."
+            tests:
+              - not_null  
           - name: Yield(tons)
-            description: "Total yield in tons."
+            tests:
+              - not_null
           - name: Soil_Type
-            description: "Type of soil on the farm."
+            tests:
+              - not_null
           - name: Season
-            description: "Farming season."
+            tests:
+              - not_null
           - name: Water_Usage(m3)
-            description: "Water usage in cubic meters."
+            tests:
+              - not_null
