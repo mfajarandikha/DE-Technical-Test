@@ -56,3 +56,7 @@ This allows you to verify that your metrics tables and views have been created c
 * The Airflow webserver will be accessible at: [http://localhost:8080](http://localhost:8080)
 * dbt commands (`seed`, `run`) are executed via Airflow DAGs using the DockerOperator.
 * You can use the `\dt` and `\dv` commands in `psql` to quickly explore metrics tables and views in `destination_postgres`.
+
+### ⚠️ Known Issue
+
+When the DAG runs for the first time and completes successfully, the agriculture_dataset in your data folder may change.
