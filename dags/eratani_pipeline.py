@@ -35,7 +35,7 @@ with DAG(
             ),
             Mount(
                 source=DATA_DIR,
-                target="/usr/app/seeds:ro",
+                target="/usr/app/seeds",
                 type="bind",
             ),
         ],
