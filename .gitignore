@@ -6,3 +6,5 @@ config/
 __pycache__/
 *.pyc
 var/
+target/
+dbt_packages/
