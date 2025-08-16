@@ -3,15 +3,13 @@ from airflow.providers.docker.operators.docker import DockerOperator
 from datetime import datetime
 from docker.types import Mount
 
-default_args = {
-    "owner": "fajar",
-    "depends_on_past": False,
-}
+DBT_PROJECT = "/workspaces/DE-Technical-Test/dbt/my_project_test"  # Update Path ke DBT project directory
+DBT_HOME = "/workspaces/DE-Technical-Test/dbt"  # Update Path ke DBT home directory
+DATA_DIR = "/workspaces/DE-Technical-Test/data"  # Update Path ke data directory
 
 with DAG(
     "dbt_seed_dag",
-    default_args=default_args,
-    schedule=None,
+    schedule="0 6 * * *",
     start_date=datetime(2025, 8, 15),
     catchup=False,
 ) as dag:
@@ -26,18 +24,18 @@ with DAG(
         working_dir="/usr/app",
         mounts=[
             Mount(
-                source="/workspaces/DE-Technical-Test/dbt/my_project_test",
+                source=DBT_PROJECT,
                 target="/usr/app",
                 type="bind",
             ),
             Mount(
-                source="/workspaces/DE-Technical-Test/dbt",
+                source=DBT_HOME,
                 target="/root/.dbt",
                 type="bind",
             ),
             Mount(
-                source="/workspaces/DE-Technical-Test/data",
-                target="/usr/app/seeds",
+                source=DATA_DIR,
+                target="/usr/app/seeds:ro",
                 type="bind",
             ),
         ],
@@ -55,12 +53,12 @@ with DAG(
         working_dir="/usr/app",
         mounts=[
             Mount(
-                source="/workspaces/DE-Technical-Test/dbt/my_project_test",
+                source=DBT_PROJECT,
                 target="/usr/app",
                 type="bind",
             ),
             Mount(
-                source="/workspaces/DE-Technical-Test/dbt",
+                source=DBT_HOME,
                 target="/root/.dbt",
                 type="bind",
             ),
