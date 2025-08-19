@@ -38,7 +38,7 @@ To inspect the database where metrics are stored:
 ### Open a shell in the container:
 
 ```bash
-docker exec -it destination_postgres psql -U destination_user -d destination_db
+docker compose exec -it destination_postgres psql -U destination_user -d destination_db
 ```
 
 ### Open list tables and views:
